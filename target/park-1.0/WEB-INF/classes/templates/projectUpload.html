@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <title>模型上传数据 </title>
+    <script type="text/javascript" th:src = @{/js/upload.js}></script>
+    <script type="text/javascript" th:src = @{/js/httpc.js}></script>
+    <script type="text/javascript">
+        //var url = "http://192.168.1.113:8080/park-1.0"
+        var url = "http://180.164.59.226:8887/park-1.0"
+        //var url = "http://localhost:8080/"
+        //var url = ""
+        var sizePerPage = 4
+        function parkUpload(image, type) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('POST',url + '/park/upload', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("result").innerText = "result:" + xhr.responseText
+                }
+            };
+            var m = {"image64": image, "type": type}
+            xhr.send(JSON.stringify(m))
+        }
+    </script>
+</head>
+<body onload="reg()">
+<span id = "projectId" th:text="${projectId}" style="display: none"/>
+<div id = "result">result</div>
+<div ><input type="file" id = "checkFile"></input>    </div>
+<div><select onchange="getChilds(this.value)" class="form-control select2" id="categoryId" name="catId">
+    <option value=""> -- 请选择 -- </option>
+    <option  th:selected="${category}" th:each="c:${categoryList}"  th:value="${c}" th:text="${c}" value="1">蔬菜</option>
+</select>
+</div>
+<div><img src="" id="viewCheck" width="299" height="299"></div>
+<div><img src="" id="viewCut" width="299" height="299" style="display: block"></div>
+<div>
+<input type="button" value="上传" onclick="onUpload(document)"/>
+</div>
+</body>
+</html>

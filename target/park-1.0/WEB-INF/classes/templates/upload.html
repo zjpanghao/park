@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <title>window.onload </title>
+    <script type="text/javascript">
+        //var url = "http://192.168.1.113:8080/park-1.0"
+        var url = "http://180.164.59.226:8887/park-1.0"
+        //var url = "http://localhost:8080/"
+        //var url = ""
+        var sizePerPage = 4
+
+        function parkCut(image) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('POST',url + '/park/cut', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    img = document.getElementById("viewCut");
+                    img.src = "data:image/jpeg;base64," + xhr.responseText
+                    if (xhr.responseText.length > 100) {
+                        parkCheck(xhr.responseText)
+                    } else {
+                        img = document.getElementById("viewCheck");
+                        image64 = img.src.split(",", 2)
+                        parkCheck(image64[1])
+                    }
+                }
+            };
+            xhr.send(image)
+        }
+
+
+        function parkCheck(image) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('POST',url + '/park/check/result', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("result").innerText = xhr.responseText
+                }
+            };
+            xhr.send(image)
+        }
+
+        function parkUpload(image, type) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('POST',url + '/park/upload', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("result").innerText = "result:" + xhr.responseText
+                }
+            };
+            var m = {"image64": image, "type": type}
+            xhr.send(JSON.stringify(m))
+        }
+        function  reg() {
+            var inputBox = document.getElementById("checkFile");
+                inputBox.addEventListener("change", function () {
+                var reader = new FileReader();
+                reader.readAsDataURL(inputBox.files[0]);//发起异步请求
+                reader.onload = function () {
+                    img = document.getElementById("viewCheck");
+                    img.src = this.result
+                    image64=this.result.split(",", 2)
+                    parkCut(image64[1])
+                }
+            })
+        }
+
+        function  onUploadFile(type) {
+            var result = document.getElementById("result").innerText
+            if ((result.toString().indexOf("IDLE") == -1) && (result.toString().indexOf("PARK") == -1)) {
+                document.getElementById("result").innerText = "图片校验结果不合法"
+                return
+            }
+            cutImg = document.getElementById("viewCut")
+            if (cutImg.src.length < 100) {
+                img = document.getElementById("viewCheck");
+            } else {
+                img = cutImg
+            }
+            image64 = img.src.split(",", 2)
+            if (image64 == '')
+                return
+            parkUpload(image64[1], type)
+        }
+    </script>
+</head>
+<body onload="reg()">
+<div id = "result">result</div>
+<input type="file" id = "checkFile"></input>
+<img src="" id="viewCheck">
+<div><img src="" id="viewCut"></div>
+<div>
+<input type="button" value="纠正识别结果设为park" onclick="onUploadFile(1)"/>
+<input type="button" value="纠正识别结果设为idle" onclick="onUploadFile(0)"/>
+</div>
+</body>
+</html>

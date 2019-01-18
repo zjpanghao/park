@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+    <title>window.onload </title>
+    <link rel="icon" type="image/x-icon" href="/park-1.0/static/images/favicon.ico">
+
+    <script type="text/javascript">
+       // var url = "http://192.168.1.113:8080/park-1.0"
+        var url = "http://180.164.59.226:8887/park-1.0"
+        //var url = "http://localhost:8080/park-1.0"
+        function initAll() {
+            getSaveThresh()
+            get_count()
+            getVersion()
+        }
+        function  getVersion() {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET', url + '/park/version', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("model").innerHTML = "模型版本号:" + xhr.responseText
+                }
+            };
+            xhr.send()
+        }
+        function get_count() {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET',url + '/park/count', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("total").innerHTML = xhr.responseText
+                }
+            };
+            xhr.send()
+        }
+
+        function getSaveThresh() {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET',url + '/park/saveThresh', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    //obj = JSON.parse(xhr.responseText)
+                    //if (obj.error_code == 0)
+                    document.getElementById("saveThresh").innerHTML = "文件落地阈值:" + xhr.responseText
+                }
+            };
+            xhr.send()
+        }
+
+
+	function find_picture() {
+        get_count()
+		var xhr = new XMLHttpRequest()
+		xhr.open('GET',url + '/park/index', false)
+	    xhr.onload = function(e) {
+		if(this.readyState == 4  && this.status == 200){
+			document.getElementById("num").innerHTML = xhr.responseText
+            fname=xhr.responseText
+            if (fname == null || fname == '') {
+                return
+            }
+            document.getElementById("file").innerHTML =window.atob(xhr.responseText)
+            document.getElementById("park").src = url + '/park/get/'+ xhr.responseText
+		}
+	  };
+		xhr.send()
+	}
+
+    function back(result) {
+        fname=document.getElementById("num").innerHTML
+        if (fname == null || fname == '') {
+            return
+        }
+        var backResult = {"result": result, "index":fname}
+        var xhr = new XMLHttpRequest()
+        xhr.open('POST', url + '/park/backResult', false)
+        xhr.onload = function(e) {
+            if(this.readyState == 4  && this.status == 200){
+                find_picture();
+            }
+        };
+        xhr.send(JSON.stringify(backResult))
+    }
+
+    function  viewLearn(type) {
+            window.location.href= url + "/park/learn/" + type
+    }
+
+    function  viewError(type) {
+        window.location.href= url + "/park/error/" + type
+    }
+    function viewCheck() {
+        window.location.href= url + "/park/check"
+    }
+    function viewUpload() {
+        window.location.href= url + "/park/upload"
+    }
+
+    function viewRedCut() {
+        window.location.href= url + "/park/cut"
+    }
+    function addThresh(value) {
+        var xhr = new XMLHttpRequest()
+        xhr.open('POST',url + '/park/saveThresh/' + value, false)
+        xhr.onload = function(e) {
+            if(this.readyState == 4  && this.status == 200){
+                getSaveThresh()
+            }
+        };
+        xhr.send()
+    }
+    </script>
+</head>
+<body onload="initAll()">
+<div id = "model">--</div>
+<div id = "saveThresh">--</div>
+<div ><input type="button" value="升高" onclick="addThresh(2)"/> &nbsp &nbsp<input type="button" value="降低" onclick="addThresh(-2)"/> </div>
+<div id = "total">0</div>
+<div id = "num">点击next获取图片</div>
+<div id = "file"></div>
+<div><img id = "park" height="299" width="299" src = ""/></div>
+<br>
+<div>
+    <button id = "next" onclick = find_picture() >next</button>
+    <button id = "right" onclick = back(0) >空闲</button>
+    <button id = "wrong" onclick = back(1) >有车</button>
+    <button id = "giveup" onclick = back(2) >不好判断</button>
+</div>
+
+<input type="button" onclick="viewLearn(1)" value="view learn park"/>
+<input type="button" onclick="viewLearn(0)" value="view learn idle"/>
+<br>
+
+</div>
+<div>
+<input type="button" onclick="viewError(1)" value="查看park识别错误训练样本集"/>
+<input type="button" onclick="viewError(0)" value="查看idle识别错误训练样本集"/>
+</div>
+<br>
+
+<!--<div> <input type="button" onclick="viewCheck()" value="图片校验"/> </div>-->
+<div> <input type="button" onclick="viewUpload()" value="添加图片"/> </div>
+
+<div> <input type="button" onclick="viewRedCut()" value="剪切红框"/> </div>
+</body>
+</html>

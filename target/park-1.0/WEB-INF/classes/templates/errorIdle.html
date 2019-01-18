@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <title>window.onload </title>
+    <script type="text/javascript">
+        //var url = "http://192.168.1.113:8080/park-1.0"
+        var url = "http://180.164.59.226:8887/park-1.0"
+        var type = 0
+        var sizePerPage = 4
+        //var url = "http://localhost:8080/"
+        function loadCount(myType) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET',url + '/park/error/count/' + myType, false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    document.getElementById("total").innerText = xhr.responseText
+                }
+            };
+            xhr.send()
+        }
+
+        function  loadPics(myType) {
+            num = document.getElementById("page").value * sizePerPage ;
+            for (var i = 1; i <= 4; i++) {
+                var myImage = document.getElementById("l" + i);
+                var xhr = new XMLHttpRequest()
+                num++
+                xhr.open('GET',url + '/park/error/index/get/' + num + "_" + myType, false)
+                xhr.onload = function(e) {
+                    if(this.readyState == 4  && this.status == 200){
+                        myImage.src = url + "/park/get/" + xhr.responseText
+                        myImage.alt = xhr.responseText
+                    }
+                };
+                xhr.send()
+            }
+            document.getElementById("page").value = parseInt(document.getElementById("page").value) + 1;
+        }
+
+        function  reload() {
+            loadCount(type)
+            loadPics(type)
+        }
+
+        function realDelete(base64Name) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET',url + '/park/deleteFile/' + base64Name, false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                }
+            };
+            xhr.send()
+        }
+
+        function  deleteFile(name) {
+            var myImage = document.getElementById(name);
+            fullName = window.atob(myImage.alt)
+            var dataFullName = fullName.replace("error", "db/data")
+            fullNameBase64 = window.btoa(dataFullName)
+            realDelete(fullNameBase64)
+            realDelete(myImage.alt)
+            reload()
+        }
+
+    </script>
+</head>
+<body onload="reload()">
+<div id = "total">0</div>
+<input type="text" id = "page" value="0"></input>
+
+<div >
+    <img id = "l1"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteFile('l1')">删除 </button> </img>
+    <img id = "l2"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteFile('l2')">删除 </button></img>
+    <img id = "l3"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteFile('l3')">删除 </button></img>
+    <img id = "l4"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteFile('l4')">删除 </button></img>
+</div>
+<br>
+<div ><button onclick= reload() >下一页</button></div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>模型新数据 </title>
+    <script type="text/javascript" th:src = @{/js/view.js}></script>
+    <script type="text/javascript" th:src = @{/js/httpc.js}></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body onload="reloadViewData()">
+<span id = "projectId" th:text="${projectId}"/>
+<div><select  onchange="reloadViewData()" class="form-control select2" id="categoryId" name="catId">
+    <option value=""> -- 请选择 -- </option>
+    <option  th:selected="${category}" th:each="c:${categoryList}"  th:value="${c}" th:text="${c}" value="1">蔬菜</option>
+</select>
+</div>
+
+<body >
+<div >总数:<label id = "total">0</label></div>
+<input type="text" id = "page" value="0"></input>
+<div >
+    <img id = "l1"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteData('l1')">删除 </button> </img>
+    <img id = "l2"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteData('l2')">删除 </button></img>
+    <img id = "l3"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteData('l3')">删除 </button></img>
+    <img id = "l4"  src = "" height="299" width="299"> <button value="delete" onclick ="deleteData('l4')">删除 </button></img>
+</div>
+<br>
+<div ><button onclick= prePage() >上一页</button> <button onclick= nextPage() >下一页</button></div>
+
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>window.onload </title>
+    <script type="text/javascript">
+        //var url = "http://192.168.1.113:8080/park-1.0"
+        var url = "http://180.164.59.226:8887/park-1.0"
+        var type = 0
+        var sizePerPage = 4
+        //var url = "http://localhost:8080/"
+        function parkCut(image) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('POST',url + '/park/cut', false)
+            xhr.onload = function(e) {
+                if(this.readyState == 4  && this.status == 200){
+                    img = document.getElementById("viewCut");
+                    img.src = "data:image/jpeg;base64," + xhr.responseText
+                }
+            };
+            xhr.send(image)
+        }
+        function  reg() {
+            var inputBox = document.getElementById("checkFile");
+            inputBox.addEventListener("change", function () {
+                var reader = new FileReader();
+                reader.readAsDataURL(inputBox.files[0]);//发起异步请求
+                reader.onload = function () {
+                    //读取完成后，数据保存在对象的result属性中
+                    img = document.getElementById("viewCheck");
+                    img.src = this.result
+                    image64=this.result.split(",", 2)
+                    parkCut(image64[1])
+                }
+            })
+        }
+    </script>
+</head>
+<body onload="reg()">
+<div id = "result">result</div>
+<input type="file" id = "checkFile"></input>
+<div><img src="" id="viewCheck"></div>
+<div><img src="" id="viewCut"></div>
+</body>
+</html>

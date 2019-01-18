@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title>模型校验 </title>
+    <link rel="icon" type="image/x-icon" href="/park-1.0/static/images/favicon.ico">
+   <!--<script type="text/javascript" src="jquery.js"></script>-->
+    <!--</script>-->
+    <script type="text/javascript" th:src = @{/js/httpc.js}></script>
+    <script type="text/javascript" th:src = @{/js/check.js}>
+        // var url = "http://192.168.1.113:8080/park-1.0"
+        //var url = "http://localhost:8080/park-1.0"
+
+    </script>
+</head>
+<body>
+
+<div id = "help">点击获取图片</div>
+<div id = "picturePath" style = "display: none"></div>
+<div id = "file" style = "display: none"></div>
+<div>模型ID:<span id = "modelId" th:text="${projectId}"/></div>
+<div>待判断图片数:<label id = "total" ></label></div>
+识别类型: <label id = "result"></label>   分数：<label id = "score"></label>
+<div><img id = "sample" height="299" width="299" src = ""/></div>
+<br>
+<div>
+    <button id = "next" onclick = flushPicture(document)>获取图片</button>
+    <button id = "correct" onclick = category() >纠正</button>
+</div>
+<div id = "correctResult"></div>
+<br>
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!doctype html>
+<html xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <title>纠正结果 </title>
+    <link rel="icon" type="image/x-icon" href="/park-1.0/static/images/favicon.ico">
+    <script type="text/javascript" src=/park-1.0/js/check.js>
+    </script>
+    <script type="text/javascript" src=/park-1.0/js/httpc.js></script>
+</head>
+<body>
+<span id = "params" th:text="${data}"/></div>
+<select onchange="getChilds(this.value)" class="form-control select2" id="categoryId" name="catId">
+    <option value=""> -- 请选择 -- </option>
+    <option  th:selected="${category}" th:each="c:${categoryList}"  th:value="${c}" th:text="${c}" value="1">蔬菜</option>
+</select>
+<input type="button" value="确认"  onclick="correctAi()"/>
+<input type="button" value="取消"  onclick="window.close()"/>
+<br>
+</div>
+</body>
+</html>
